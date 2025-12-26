@@ -37,8 +37,8 @@ check_dependencies() {
     done
     
     if [[ ${#missing_deps[@]} -gt 0 ]]; then
-        print_warning "Missing dependencies:  ${missing_deps[*]}"
-        read -p "Install missing dependencies? (y/n):  " -n 1 -r
+        print_warning "Missing dependencies: ${missing_deps[*]}"
+        read -p "Install missing dependencies? (y/n): " -n 1 -r
         echo
         if [[ $REPLY =~ ^[Yy]$ ]]; then
             sudo apt update
@@ -97,7 +97,7 @@ create_package_list() {
     mkdir -p config/package-lists
     
     cat > config/package-lists/custom.list.chroot << 'EOF'
-# CRITICAL:  Essential boot packages (CORRECTED NAMES)
+# CRITICAL: Essential boot packages (CORRECTED NAMES)
 live-boot
 live-boot-initramfs-tools
 live-config
@@ -180,7 +180,7 @@ GRUB_CONFIG
 
 # Create boot configuration
 create_boot_config() {
-    print_status "Creating boot configuration files... "
+    print_status "Creating boot configuration files..."
     
     # Create syslinux configuration for BIOS boot
     mkdir -p config/bootloaders/syslinux
@@ -213,7 +213,7 @@ PRESEED
 
 # Create installation scripts
 create_install_scripts() {
-    print_status "Creating installation scripts... "
+    print_status "Creating installation scripts..."
     
     mkdir -p config/hooks
     
@@ -233,7 +233,7 @@ apt-get update
 # Create pos user
 if ! id -u pos >/dev/null 2>&1; then
     useradd -m -s /bin/bash pos
-    echo "pos:     " | chpasswd
+    echo "pos:      " | chpasswd
     usermod -aG sudo pos
 fi
 
@@ -256,7 +256,7 @@ usermod -aG docker pos
 echo "[+] Docker installed"
 DOCKER_SCRIPT
 
-    # 3. Node.js installation (direct,  no nvm)
+    # 3. Node.js installation (direct, no nvm)
     cat > config/hooks/020-install-nodejs.chroot << 'NODE_SCRIPT'
 #!/bin/bash
 set -e
@@ -298,13 +298,13 @@ systemctl enable docker
 
 # Create motd
 cat > /etc/motd << 'MOTD_EOF'
-╔══════════════════════════════════════════╗
+╔═════════════════════════════════�════════╗
 ║          POS Debian System               ║
 ╚══════════════════════════════════════════╝
 
-User:  pos (password:  4 spaces)
+User: pos (password: 4 spaces)
 
-Quick commands: 
+Quick commands:
   docker ps      - List containers
   pm2 list       - List Node.js apps
   tailscale up   - Connect to Tailscale
@@ -324,7 +324,7 @@ FINAL_SETUP
 
 # Create deployment script (simplified)
 create_deployment_script() {
-    print_status "Creating deployment scripts... ")
+    print_status "Creating deployment scripts..."
     
     cat > config/hooks/800-deploy-apps.chroot << 'DEPLOY_SCRIPT'
 #!/bin/bash
@@ -345,7 +345,7 @@ echo "1. Docker is installed and running"
 echo "2. Node.js 22 is installed"
 echo "3. Tailscale is ready"
 echo ""
-echo "To deploy your apps: "
+echo "To deploy your apps:"
 echo "  cd /home/pos"
 echo "  git clone "
 echo ""
@@ -363,7 +363,7 @@ DEPLOY_SCRIPT
 
 # Build ISO function
 build_iso() {
-    print_status "Starting ISO build process... "
+    print_status "Starting ISO build process..."
     print_warning "This may take 15-30 minutes"
     echo ""
     
@@ -383,17 +383,17 @@ build_iso() {
             print_success "                    ISO BUILD SUCCESSFUL                    "
             print_success "═══════════════════════════════════════════════════════════"
             echo ""
-            print_success "ISO Name:       $ISO_NAME"
-            print_success "ISO Size:       $iso_size"
-            print_success "Build Time:     ${minutes}m ${seconds}s"
-            print_success "Location:       $BUILD_DIR/live-image-amd64.hybrid.iso"
+            print_success "ISO Name:        $ISO_NAME"
+            print_success "ISO Size:        $iso_size"
+            print_success "Build Time:      ${minutes}m ${seconds}s"
+            print_success "Location:        $BUILD_DIR/live-image-amd64.hybrid.iso"
             echo ""
             
             # Create checksum
             sha256sum live-image-amd64.hybrid.iso > "$ISO_NAME.sha256"
             
             # Test ISO structure
-            print_status "Verifying ISO structure... "
+            print_status "Verifying ISO structure..."
             if command -v isoinfo >/dev/null 2>&1; then
                 if isoinfo -i live-image-amd64.hybrid.iso -l | grep -q "live/vmlinuz"; then
                     print_success "✓ Boot kernel found"
@@ -404,25 +404,25 @@ build_iso() {
             
             # Create test instructions
             cat > TEST_INSTRUCTIONS.txt << 'INSTRUCTIONS'
-TEST INSTRUCTIONS: 
+TEST INSTRUCTIONS:
 ==================
 
-1. Test in QEMU: 
+1. Test in QEMU:
    qemu-system-x86_64 -cdrom live-image-amd64.hybrid.iso -m 2048 -boot d
 
-2. Create USB: 
+2. Create USB:
    sudo dd if=live-image-amd64.hybrid.iso of=/dev/sdX bs=4M status=progress
    sudo sync
 
-3. Boot troubleshooting: 
-   - If blinking cursor:  Try different USB port (USB 2.0)
-   - In BIOS:  Disable Secure Boot,  enable Legacy/CSM if needed
-   - At boot menu:  Press Tab,  add "nomodeset" to kernel parameters
+3. Boot troubleshooting:
+   - If blinking cursor: Try different USB port (USB 2.0)
+   - In BIOS: Disable Secure Boot, enable Legacy/CSM if needed
+   - At boot menu: Press Tab, add "nomodeset" to kernel parameters
 
-ISO INFO: 
-- User:  pos
-- Password:  4 spaces
-- Installed:  Docker,  Node.js 22,  Tailscale
+ISO INFO:
+- User: pos
+- Password: 4 spaces
+- Installed: Docker, Node.js 22, Tailscale
 INSTRUCTIONS
             
             print_success "Test instructions saved to TEST_INSTRUCTIONS.txt"
@@ -433,7 +433,7 @@ INSTRUCTIONS
     else
         print_error "ISO build failed!"
         echo ""
-        print_status "Last 20 lines of build log: "
+        print_status "Last 20 lines of build log:"
         tail -20 build.log
         exit 1
     fi
@@ -446,35 +446,35 @@ main() {
     echo "╚══════════════════════════════════════════╝"
     echo ""
     
-    # Step 1:  Check dependencies
+    # Step 1: Check dependencies
     check_dependencies
     
-    # Step 2:  Cleanup
+    # Step 2: Cleanup
     cleanup
     
-    # Step 3:  Setup build environment
+    # Step 3: Setup build environment
     setup_build_env
     
-    # Step 4:  Create package list
+    # Step 4: Create package list
     create_package_list
     
-    # Step 5:  Create boot config
+    # Step 5: Create boot config
     create_boot_config
     
-    # Step 6:  Create install scripts
+    # Step 6: Create install scripts
     create_install_scripts
     
-    # Step 7:  Create deployment script
+    # Step 7: Create deployment script
     create_deployment_script
     
-    # Step 8:  Build ISO
+    # Step 8: Build ISO
     build_iso
     
     echo ""
-    print_success "Build complete! Next steps: "
-    echo "  1. Test ISO:  qemu-system-x86_64 -cdrom '$BUILD_DIR/live-image-amd64.hybrid.iso' -m 2048"
-    echo "  2. Create USB:  sudo dd if='$BUILD_DIR/live-image-amd64.hybrid.iso' of=/dev/sdX bs=4M status=progress"
-    echo "  3. Boot from USB and login as 'pos' (password:  4 spaces)"
+    print_success "Build complete! Next steps:"
+    echo "  1. Test ISO: qemu-system-x86_64 -cdrom '$BUILD_DIR/live-image-amd64.hybrid.iso' -m 2048"
+    echo "  2. Create USB: sudo dd if='$BUILD_DIR/live-image-amd64.hybrid.iso' of=/dev/sdX bs=4M status=progress"
+    echo "  3. Boot from USB and login as 'pos' (password: 4 spaces)"
     echo ""
 }
 
