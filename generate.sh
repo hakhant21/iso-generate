@@ -108,10 +108,9 @@ systemd-sysv
 linux-image-amd64
 
 # Firmware (CORRECT NAMES - Debian 12 uses different names)
-firmware-linux-free
-firmware-linux-nonfree
-intel-microcode
-amd64-microcode
+firmware-linux
+firmware-misc-nonfree
+microcode
 
 # Initramfs tools
 initramfs-tools
