@@ -669,16 +669,7 @@ add_system_configs() {
 ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 HOSTS
-    
-    # SSH config
-    mkdir -p config/includes.chroot/etc/ssh
-    cat > config/includes.chroot/etc/ssh/sshd_config.d/pos.conf << 'SSHD'
-PermitRootLogin no
-PasswordAuthentication yes
-PubkeyAuthentication yes
-AllowUsers pos
-SSHD
-    
+
     print_success "System configurations added"
 }
 
